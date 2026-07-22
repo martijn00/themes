@@ -8,7 +8,7 @@ import {
 	readStoredTheme,
 	writeStoredTheme,
 } from "../core/client-dom.js";
-import { ThemeContext } from "../core/context.js";
+import { ThemeContext, type ThemeContextInstance } from "../core/context.js";
 import { createThemeStore } from "../core/store.js";
 import { publishThemeChannel, subscribeThemeChannel } from "../core/sync.js";
 import { isThemeSelection } from "../core/theme-validation.js";
@@ -47,7 +47,9 @@ function resolveSelection(
 }
 
 export type ClientThemeProviderProps<Themes extends string = DefaultTheme> =
-	ThemeProviderProps<Themes>;
+	ThemeProviderProps<Themes> & {
+		themeContext?: ThemeContextInstance;
+	};
 
 export function ClientThemeProvider<Themes extends string = DefaultTheme>({
 	children,
@@ -70,6 +72,7 @@ export function ClientThemeProvider<Themes extends string = DefaultTheme>({
 	onStorageError,
 	systemThemeMap,
 	themeRoot,
+	themeContext = ThemeContext,
 }: ClientThemeProviderProps<Themes>): ReactElement {
 	const requestedDefault = defaultTheme ?? (enableSystem ? "system" : themes[0]);
 	const resolvedDefault = (
@@ -371,5 +374,7 @@ export function ClientThemeProvider<Themes extends string = DefaultTheme>({
 		themes,
 		setTheme: setTheme as ThemeContextValue<string>["setTheme"],
 	};
-	return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
+	const ContextProvider = themeContext.Provider;
+
+	return <ContextProvider value={contextValue}>{children}</ContextProvider>;
 }
