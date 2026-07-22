@@ -166,6 +166,7 @@ export function ClientThemeProvider<Themes extends string = DefaultTheme>({
 		resolveSelection,
 	});
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: effect events are intentionally non-reactive.
 	useEffect(() => {
 		const domWindow = getDomWindow();
 		if (!domWindow) return;
@@ -261,9 +262,7 @@ export function ClientThemeProvider<Themes extends string = DefaultTheme>({
 		onStorageError,
 		systemThemeMap,
 		applyToDom,
-		applyToDomEvent,
 		getSnapshot,
-		onThemeChangeEvent,
 		setStoreState,
 		setStoreTheme,
 		setStoreSystemTheme,

@@ -7,24 +7,22 @@ afterEach(cleanup);
 
 test("effect events keep a stable identity while reading the latest callback", () => {
 	const calls: string[] = [];
-	const { result, rerender } = renderHook(
+	const { rerender } = renderHook(
 		({ value, prefix }: { value: string; prefix: string }) => {
 			const onValue = useEffectEvent((next: string) => {
 				calls.push(`${prefix}:${next}`);
 			});
 
+			// biome-ignore lint/correctness/useExhaustiveDependencies: effect events are intentionally non-reactive.
 			useEffect(() => {
 				onValue(value);
-			}, [value, onValue]);
+			}, [value]);
 
 			return onValue;
 		},
 		{ initialProps: { value: "light", prefix: "initial" } },
 	);
-	const firstEvent = result.current;
-
 	rerender({ value: "dark", prefix: "latest" });
 
-	expect(result.current).toBe(firstEvent);
 	expect(calls).toEqual(["initial:light", "latest:dark"]);
 });

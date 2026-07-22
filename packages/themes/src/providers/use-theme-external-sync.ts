@@ -48,6 +48,7 @@ export function useThemeExternalSync<Themes extends string>({
 	const applyToDomEvent = useEffectEvent(applyToDom);
 
 	// Re-apply theme on bfcache restore (pageshow) and history navigation (popstate)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: effect events are intentionally non-reactive.
 	useEffect(() => {
 		const domWindow = getDomWindow();
 		if (!domWindow) return;
@@ -65,8 +66,9 @@ export function useThemeExternalSync<Themes extends string>({
 			domWindow.removeEventListener("pageshow", handler);
 			domWindow.removeEventListener("popstate", handler);
 		};
-	}, [validForcedTheme, getSnapshot, systemThemeMap, resolveSelection, applyToDomEvent]);
+	}, [validForcedTheme, getSnapshot, systemThemeMap, resolveSelection]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: effect events are intentionally non-reactive.
 	useEffect(() => {
 		const domWindow = getDomWindow();
 		if (!domWindow) return;
@@ -92,9 +94,9 @@ export function useThemeExternalSync<Themes extends string>({
 		getSnapshot,
 		setStoreTheme,
 		resolveSelection,
-		applyToDomEvent,
 	]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: effect events are intentionally non-reactive.
 	useEffect(() => {
 		if (storage === "none") return;
 		return subscribeThemeChannel(channel, (newTheme) => {
@@ -112,6 +114,5 @@ export function useThemeExternalSync<Themes extends string>({
 		getSnapshot,
 		setStoreTheme,
 		resolveSelection,
-		applyToDomEvent,
 	]);
 }

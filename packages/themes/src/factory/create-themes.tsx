@@ -82,13 +82,14 @@ export function createThemes<const Themes extends readonly [string, ...string[]]
 		const { theme, resolvedTheme } = useTypedTheme();
 		const isFirstRender = useRef(true);
 		const onEffect = useEffectEvent(effect);
+		// biome-ignore lint/correctness/useExhaustiveDependencies: effect events are intentionally non-reactive.
 		useEffect(() => {
 			if (isFirstRender.current) {
 				isFirstRender.current = false;
 				return;
 			}
 			return onEffect(theme, resolvedTheme);
-		}, [theme, resolvedTheme, onEffect, ...deps]);
+		}, [theme, resolvedTheme, ...deps]);
 	}
 
 	function TypedThemedImage(props: TypedThemedImageProps<ThemeName>): ReactElement {
